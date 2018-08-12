@@ -1,0 +1,59 @@
+﻿@using MovSite.Models;
+@using System.Configuration;
+
+@model MovSite.ViewModels.MovieFormsViewModel
+
+@{
+    ViewBag.Title = "Movie Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.PageTitle</h2>
+
+@using (Html.BeginForm("Save", "Movies", new { seen = false, actionName = Model.ActionName }))
+{
+    @Html.HiddenFor(m => m.Id)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ReleaseDate)
+        @Html.TextBoxFor(m => m.ReleaseDate, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ReleaseDate)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.RatingInIMDB)
+        @Html.TextBoxFor(m => m.RatingInIMDB, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.RatingInIMDB)
+    </div>
+
+    @Html.AntiForgeryToken();
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-warning">Save</button>
+    </div>
+}
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            $('#Name').focusout(function () {
+                let movieTitle = $(this).val();
+                let query = "https://www.omdbapi.com/?apikey=@ConfigurationManager.AppSettings["OMDbAPIkey"]&t=" + movieTitle;
+                $.ajax(query).done(function (movieObj) {
+                    let imdbRating = movieObj["imdbRating"];
+                    if (imdbRating) $("#RatingInIMDB").val(imdbRating);
+                    else $("#RatingInIMDB").val("@Messages.MovieNotFoundInIMDbDatabase");
+                });
+            });
+        });
+    </script>
+}
+

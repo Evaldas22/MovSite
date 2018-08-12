@@ -1,0 +1,71 @@
+﻿@model List<MovSite.Models.TVShow>
+
+@{
+    ViewBag.Title = "Already Seen TV Shows";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TV Shows Already Seen</h2>
+@Html.ActionLink("Add", "New", "TVShows", new { seen = true }, new { @class = "btn btn-warning" })
+
+@if (Model.Count > 0)
+{
+    <table id="tvShowsTable" class="table table-­‐bordered table-­‐hover">
+        <thead>
+            <tr class="active">
+                <th>TV Show</th>
+                <th>Release Date</th>
+                <th>Date when seen</th>
+                <th>Rating in IMDB</th>
+                <th>My rating</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tvShow in Model)
+            {
+                <tr>
+                    <td>@Html.ActionLink(tvShow.Name, "Edit", "TVShows", new { id = tvShow.Id, seen = true }, null) </td>
+
+                    <td>@tvShow.ReleaseDate</td>
+
+                    @if (tvShow.WhenSeen.HasValue)
+                    {
+                        <td>@tvShow.WhenSeen.Value.ToShortDateString()</td>
+                    }
+                    else
+                    {
+                        <td>@tvShow.WhenSeen</td>
+                    }
+
+                    <td>@tvShow.RatingInIMDB</td>
+                    <td>@tvShow.MyRating</td>
+                    <td>@Html.ActionLink("Delete", "DeleteTVShow", "TVShows", new { id = tvShow.Id, seen = true }, new { @class = "btn btn-danger" })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>There is no TV shows yet.</p>
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#tvShowsTable").dataTable({
+                "lengthChange": false,
+                "columns": [
+                    { "TV Show": 1, "orderable": true },
+                    { "Release Date": 2, "orderable": true },
+                    { "Date when seen": 3, "orderable": true },
+                    { "Rating In IMDB": 4, "orderable": true },
+                    { "My rating": 5, "orderable": true },
+                    { "Delete": 6, "orderable": false }
+                ]
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,58 @@
+﻿@model List<MovSite.Models.TVShow>
+
+@{
+    ViewBag.Title = "TV Shows Wishlist";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TV Shows Wishlist</h2>
+@Html.ActionLink("Add", "New", "TVShows", new { seen = false }, new { @class = "btn btn-warning" })
+
+@if (Model.Count > 0)
+{
+    <table id="tvShowsTable" class="table table-­‐bordered table-­‐hover">
+        <thead>
+            <tr class="active">
+                <th>TV Show</th>
+                <th>Release Date</th>
+                <th>Rating in IMDB</th>
+                <th>I saw that TV show</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tvShow in Model)
+            {
+                <tr>
+                    <td>@Html.ActionLink(tvShow.Name, "Edit", "TVShows", new { id = tvShow.Id, seen = false }, null) </td>
+                    <td>@tvShow.ReleaseDate</td>
+                    <td>@tvShow.RatingInIMDB</td>
+                    <td>@Html.ActionLink("I saw it!", "TVShowSeen", "TVShows", new { id = tvShow.Id }, new { @class = "btn btn-default" })</td>
+                    <td>@Html.ActionLink("Delete", "DeleteTVShow", "TVShows", new { id = tvShow.Id, seen = false }, new { @class = "btn btn-danger" })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>There is no TV shows yet.</p>
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#tvShowsTable").dataTable({
+                "lengthChange": false,
+                "columns": [
+                    { "TV Show": 1, "orderable": true },
+                    { "Release Date": 2, "orderable": true },
+                    { "Rating In IMDB": 3, "orderable": true },
+                    { "I Saw that TV show": 4, "orderable": false },
+                    { "Delete": 5, "orderable": false }
+                ]
+            });
+        });
+    </script>
+}
+

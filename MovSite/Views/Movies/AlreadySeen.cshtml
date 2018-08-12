@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Already Seen Movies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Movies Already Seen</h2>
+@Html.ActionLink("Add", "New", "Movies", new { seen = true }, new { @class = "btn btn-warning" })
+
+
+<table id="movies" class="table table-­‐bordered table-­‐hover">
+    <thead>
+        <tr class="active">
+            <th>Movie Name</th>
+            <th>Release Date</th>
+            <th>Date when seen</th>
+            <th>Rating in IMDB</th>
+            <th>My rating</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $("#movies").DataTable({
+                "ajax": {
+                    "url": "/api/Movies/GetMoviesSeen/@User.Identity.GetUserId()",
+                    "dataSrc": ""
+                },
+                "lengthChange": false,
+                "columns": [
+                    {
+                        "data": "Name",
+                        "orderable": true,
+                        "render": function (data, type, movie) {
+                            return "<a href='/Movies/Edit/True?id=" + movie.Id + "'>" + movie.Name + "</a>";
+                        }
+                    },
+                    {
+                        "data": "ReleaseDate",
+                        "orderable": true
+                    },
+                    {
+                        "data": "WhenSeen",
+                        "orderable": true,
+                        "render": function (data) {
+                            return (moment(data).format("YYYY-MM-DD"));
+                        }
+                    },
+                    {
+                        "data": "RatingInIMDB",
+                        "orderable": true
+                    },
+                    {
+                        "data": "MyRating",
+                        "orderable": true
+                    },
+                    {
+                        "data": "Id",
+                        "orderable": false,
+                        "render": function (data) {
+                            return "<button class='btn btn-danger' movie-id=" + data + ">Delete</button>";
+                        }
+                    }
+                ]
+            });
+
+            $("#movies").on("click", ".btn-danger", function () {
+                var button = $(this);
+
+                bootbox.confirm("Do you realy want to delete this movie?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/Movies/" + button.attr("movie-id"),
+                            method: "DELETE",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

@@ -13,6 +13,14 @@ namespace MovSite
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapMvcAttributeRoutes();
+
+            routes.MapRoute(
+                name: "FormRoute",
+                url: "{controller}/{action}/{seen}",
+                defaults: new { controller = "Home", action = "Index", seen = UrlParameter.Optional }
+            );
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

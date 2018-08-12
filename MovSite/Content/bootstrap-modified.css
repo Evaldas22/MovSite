@@ -1,0 +1,20 @@
+﻿.btn-danger {
+    color: #ffffff;
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    padding: 3px 7px !important;
+}
+
+.btn-default {
+    color: #ffffff;
+    background-color: #464545;
+    border-color: #464545;
+    padding: 3px 7px !important;
+}
+
+.btn-primary {
+    color: #ffffff;
+    background-color: #375a7f;
+    border-color: #375a7f;
+    padding: 3px 7px !important;
+}
